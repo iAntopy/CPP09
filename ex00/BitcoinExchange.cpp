@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 21:24:35 by iamongeo          #+#    #+#             */
-/*   Updated: 2023/07/27 05:03:52 by marvin           ###   ########.fr       */
+/*   Updated: 2023/07/28 03:14:57 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,24 @@ void	time_to_date_str(const struct tm& t, std::string& ret_date_str)
 }
 
 bool
-validate_date_string(const std::string& cmp, const struct tm& cmp_tm)
+validate_date_string(const std::string& cmp, struct tm& cmp_tm)
 {
 	std::ostringstream	os;
 	std::string			conv_date;
+	time_t				t = mktime(&cmp_tm);
+	struct tm*			temp_tm;
 
-	os << std::put_time(&cmp_tm, "%Y-%m-%d");
-	conv_date = os.str();
+	temp_tm = std::localtime(&t);
+
+//	os << std::put_time(temp_tm, "%Y-%m-%d");
+//	conv_date = os.str();
 //	std::cout << "conv date : " << conv_date << std::endl;
-	time_to_date_str(cmp_tm, conv_date);
+	time_to_date_str(*temp_tm, conv_date);
+	if (cmp != conv_date)
+		return (false);
+	cmp_tm = *temp_tm;
 	//std::cout << "Validating date string : " << cmp << " == converted date string : " << conv_date << std::endl;
-	return (cmp == conv_date);
+	return (true);
 }
 
 bool
@@ -63,7 +70,7 @@ BitcoinExchange::load_exchange_rates(const std::string& db_path)
 	time_t			t;
 	float			ex_rate;
 
-	std::cout << "Loady McLoadington" << std::endl;
+//	std::cout << "Loady McLoadington" << std::endl;
 	csv_file.open(db_path, std::ios::in);
 	if (!csv_file.is_open())
 		return (-1);
@@ -116,11 +123,11 @@ BitcoinExchange::exchange_rate_lookup(struct tm& date_tm, float& rate_found) con
 	//std::cout << "q_time lookup : " << q_time << std::endl; 
 
 	it = _exchange_rates.lower_bound(q_time);
-	if (it == _exchange_rates.end())
-	{
-		std::cerr << "Exchange lookup couldn't eaven find a lower bound date. What a shame." << std::endl;
-		return (false);
-	}
+//	if (it == _exchange_rates.end())
+//	{
+//		std::cerr << "Exchange lookup couldn't eaven find a lower bound date. What a shame." << std::endl;
+//		return (false);
+//	}
 	t = it->first;
 	
 	if (t != q_time && it != _exchange_rates.begin())
@@ -137,11 +144,11 @@ BitcoinExchange::get_historical_value(const std::string& query,
 {
 	size_t		pos, end_pos;
 	std::string	amount_str;
-	struct tm	date_tm;
+	struct tm	date_tm{};
 	time_t		t;
 	float		amount;
 
-	std::memset(&date_tm, 0, sizeof(date_tm));
+	//std::memset(&date_tm, 0, sizeof(date_tm));
 	ex_date = "";
 	value = "";
 	ex_rate = 0;
