@@ -12,42 +12,72 @@
 
 #include "PmergeMe.hpp"
 
+void	print_original_sequence(char **tab)
+{
+	char	**s = tab;
+
+	while (*(++s))
+		std::cout <<  *s << " ";
+	std::cout << std::endl;
+}
+
 int main(int argc, char **argv)
 {
-	PmergeMe sorter;
+	PmergeMe	sorter;
+	float		vect_attribution_time;
+	float		vect_sort_time;
+	float		vect_total_time;
+	float		list_attribution_time;
+	float		list_sort_time;
+	float		list_total_time;
 
 	if (argc < 2)
 	{
 		std::cerr << "Error: Missing int sequence as argument." << std::endl;
 		return (EXIT_FAILURE);
 	}
-//	const int arr[] = {1, 2, 3, 4};
-//	std::vector<int> 	v(arr, arr + sizeof(arr) / sizeof(arr[0]) );
-//	std::vector<int>	tv(v.begin() + 1, v.begin() + 3);
-//	std::cout << tv[0] << ", " << tv[1];
 
 //// VECTOR
 	sorter.timer_probe();
 	if (!sorter.add_sequence_from_strs(argv + 1, VECT_C))
 		return (EXIT_FAILURE);
-//	sorter.print_sequence(VECT_C);
+	sorter.timer_probe();
+	vect_attribution_time = sorter.get_delta_time();
 	sorter.sort(VECT_C);
 	sorter.timer_probe();
-	sorter.print_sequence(VECT_C);
-	float	delta_time = sorter.get_delta_time();
-	std::cout << "Time to process a range of " << sorter.size(VECT_C) << " elements with std::vector<int> : " << delta_time << " us" << std::endl;
+	vect_sort_time = sorter.get_delta_time();
+	vect_total_time = vect_attribution_time + vect_sort_time;
 
 
 ///// LISTS
 	sorter.timer_probe();
 	if (!sorter.add_sequence_from_strs(argv + 1, LIST_C))
 		return (EXIT_FAILURE);
-//	sorter.print_sequence(VECT_C);
+	sorter.timer_probe();
+	list_attribution_time = sorter.get_delta_time();
 	sorter.sort(LIST_C);
 	sorter.timer_probe();
-	sorter.print_sequence(LIST_C);
-	delta_time = sorter.get_delta_time();
-	std::cout << "Time to process a range of " << sorter.size(LIST_C) << " elements with std::list<int> : " << delta_time << " us" << std::endl;
+	list_sort_time = sorter.get_delta_time();
+	list_total_time = list_attribution_time + list_sort_time;
 
+///// VALIDATION
+	if (!sorter.both_containers_equal())
+	{
+		std::cerr << "OOPS ! Both containers are NOT equal." << std::endl;
+		return (EXIT_FAILURE);
+	}
+	else if (!sorter.containers_are_sorted())
+	{
+		std::cerr << "OOPS ! Both containers are NOT sorted." << std::endl;
+		return (EXIT_FAILURE);
+	}
+
+///// CONCLUSION
+	std::cout << "Before:	";
+	print_original_sequence(argv);
+	std::cout << "After:	";
+	sorter.print_sequence(VECT_C);
+	std::cout << "Time to process a range of " << sorter.size(VECT_C) << " elements with std::vector<int>:	" << vect_total_time << " us. (" << vect_attribution_time << " us for data collection. " << vect_sort_time << " us for sorting)" << std::endl;
+	std::cout << "Time to process a range of " << sorter.size(LIST_C) << " elements with std::list<int>:	" << list_total_time << " us. (" << list_attribution_time << " us for data collection. " << list_sort_time << " us for sorting)" << std::endl;
 	return (0);
 }

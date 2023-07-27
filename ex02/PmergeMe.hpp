@@ -6,11 +6,9 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 19:29:29 by iamongeo          #+#    #+#             */
-/*   Updated: 2023/07/30 04:06:19 by marvin           ###   ########.fr       */
+/*   Updated: 2023/07/30 16:09:44 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-
 
 #ifndef P_MERGE_ME_HPP
 # define P_MERGE_ME_HPP
@@ -37,9 +35,8 @@ class PmergeMe
 	private:
 		std::list<int>		L;
 
-		std::vector<int>	V;// swap vect 1
-		std::vector<int>	V2;// swap vect 2
-//		std::vector<int>*	V, VS;// current vect used, current vector swap used. Used in cop
+		std::vector<int>	V;// sorting vect
+		std::vector<int>	V2;// copy vect
 
 		int					N, k;
 		
@@ -49,7 +46,7 @@ class PmergeMe
 		void	merge_list(int start, int mid, int end);
 	
 		void	_sort_list(int start, int end);
-		void	_sort_vect(int start, int end);//, int depth);
+		void	_sort_vect(int start, int end);
 
 		bool				timer_ready;
 		struct timespec		ori_time{};
@@ -68,6 +65,8 @@ class PmergeMe
 
 		void	timer_probe(void);
 		float	get_delta_time(void);
+		bool	containers_are_sorted(void);
+		bool	both_containers_equal(void);
 
 		uint32_t	size(e_container_type ctype);
 };
