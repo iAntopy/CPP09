@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 21:24:35 by iamongeo          #+#    #+#             */
-/*   Updated: 2023/07/28 03:14:57 by marvin           ###   ########.fr       */
+/*   Updated: 2023/07/30 17:30:45 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,10 @@ validate_date_string(const std::string& cmp, struct tm& cmp_tm)
 	struct tm*			temp_tm;
 
 	temp_tm = std::localtime(&t);
-
-//	os << std::put_time(temp_tm, "%Y-%m-%d");
-//	conv_date = os.str();
-//	std::cout << "conv date : " << conv_date << std::endl;
 	time_to_date_str(*temp_tm, conv_date);
 	if (cmp != conv_date)
 		return (false);
 	cmp_tm = *temp_tm;
-	//std::cout << "Validating date string : " << cmp << " == converted date string : " << conv_date << std::endl;
 	return (true);
 }
 
@@ -66,11 +61,10 @@ BitcoinExchange::load_exchange_rates(const std::string& db_path)
 	std::string		date_str;
 	std::string		amount_str;
 	size_t			pos;
-	struct tm		date_tm;
+	struct tm		date_tm;;
 	time_t			t;
 	float			ex_rate;
 
-//	std::cout << "Loady McLoadington" << std::endl;
 	csv_file.open(db_path, std::ios::in);
 	if (!csv_file.is_open())
 		return (-1);
@@ -88,8 +82,6 @@ BitcoinExchange::load_exchange_rates(const std::string& db_path)
 		amount_str = next_line.substr(pos + 1, next_line.length() - pos);
 		
 		std::memset(&date_tm, 0, sizeof(date_tm));
-
-//		std::cout << "date: " << date_str << " | value: " << amount_str << std::endl;
 		if (strptime(date_str.c_str(), "%Y-%m-%d", &date_tm) == NULL
 			|| !validate_date_string(date_str, date_tm))
 		{
@@ -104,12 +96,9 @@ BitcoinExchange::load_exchange_rates(const std::string& db_path)
 			std::cerr << "Error: Failed to convert exchange rate to float " << std::endl;
 			continue ;
 		}
-
 		// Exchange rate extracted and validated. Finally put in map of exchange rates.
 		_exchange_rates[t] = ex_rate;
 	}
-//	std::cout << "Parsed database SUCCESSFULLY." << next_line << std::endl;
-
 	csv_file.close();
 	return (0);
 }
@@ -118,16 +107,10 @@ bool
 BitcoinExchange::exchange_rate_lookup(struct tm& date_tm, float& rate_found) const
 {
 	std::map<time_t, float>::const_iterator	it;
-	time_t		q_time = mktime(&date_tm), t;
-	//struct tm	*ex_time;
-	//std::cout << "q_time lookup : " << q_time << std::endl; 
-
+	time_t	q_time, t;
+	
+	q_time = mktime(&date_tm);
 	it = _exchange_rates.lower_bound(q_time);
-//	if (it == _exchange_rates.end())
-//	{
-//		std::cerr << "Exchange lookup couldn't eaven find a lower bound date. What a shame." << std::endl;
-//		return (false);
-//	}
 	t = it->first;
 	
 	if (t != q_time && it != _exchange_rates.begin())
@@ -144,32 +127,25 @@ BitcoinExchange::get_historical_value(const std::string& query,
 {
 	size_t		pos, end_pos;
 	std::string	amount_str;
-	struct tm	date_tm{};
+	struct tm	date_tm;
 	time_t		t;
 	float		amount;
 
-	//std::memset(&date_tm, 0, sizeof(date_tm));
+	std::memset(&date_tm, 0, sizeof(date_tm));
 	ex_date = "";
 	value = "";
 	ex_rate = 0;
 	total_value = 0;
-//	std::cout << "query string : " << query << std::endl;
 	pos = query.find_first_of(' ');
 	if (pos == query.npos)
-	{
 		pos = query.length();
-//		std::cerr << "query string empty : " << query << std::endl;
-//		return (false);
-	}
 	init_date = query.substr(0, pos);
-//	std::cout << "Converting ex_date " << ex_date << " to date_tm." << std::endl;
 	if (strptime(init_date.c_str(), "%Y-%m-%d", &date_tm) == NULL
 		|| !validate_date_string(init_date, date_tm))
 	{
 		std::cerr << "Error: bad input => " << init_date << std::endl;
 		return (false);
 	}
-
 
 	pos = query.find_first_not_of(" |", pos);
 	amount_str = query.substr(pos);
@@ -190,19 +166,16 @@ BitcoinExchange::get_historical_value(const std::string& query,
 
 BitcoinExchange::BitcoinExchange(void)
 {
-//	std::cout << "BitcoinExchange constructor" << std::endl;
 	if (load_exchange_rates(CSV_PATH) < 0)
 		throw std::invalid_argument("Failed to load exchange rates database.");
 }
 
 BitcoinExchange::BitcoinExchange(const BitcoinExchange& other): _exchange_rates(other._exchange_rates)
 {
-//	std::cout << "BitcoinExchange copy constructor" << std::endl;
 }
 
 BitcoinExchange&	BitcoinExchange::operator=(const BitcoinExchange& other)
 {
-//	std::cout << "BitcoinExchange copy assignment operator" << std::endl;
 	_exchange_rates.clear();
 	_exchange_rates = other._exchange_rates;
 	return (*this);
@@ -210,5 +183,4 @@ BitcoinExchange&	BitcoinExchange::operator=(const BitcoinExchange& other)
 
 BitcoinExchange::~BitcoinExchange(void)
 {
-//	std::cout << "BitcoinExchange destructor" << std::endl;
 }

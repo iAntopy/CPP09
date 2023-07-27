@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 21:20:49 by iamongeo          #+#    #+#             */
-/*   Updated: 2023/07/27 05:03:54 by marvin           ###   ########.fr       */
+/*   Updated: 2023/07/30 17:30:08 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,7 @@ int main(int argc, char **argv)
 {
 	BitcoinExchange	ftx;
 	std::fstream	input_file;
-	std::string		query;// = "2014-04-28 | 1.25";
-	std::string		init_data, ex_date, value;
+	std::string		query, init_data, ex_date, value;
 	float			ex_rate, total_value;
 
 	if (argc < 2)
@@ -43,13 +42,8 @@ int main(int argc, char **argv)
 			continue ;
 		if (!ftx.get_historical_value(query, init_data, ex_date, value, ex_rate, total_value))
 			continue ;
-			//return (clean_exit("", input_file, EXIT_FAILURE));
 		std::cout << init_data << " => " << value << " = " << total_value << std::endl;
-	//	std::cout << "ex_date : " << ex_date << ", ex_rate : " << ex_rate << ", total value : " << total_value << std::endl;	
 	}
 	input_file.close();
-	//if (!ftx.get_historical_value(query, ex_date, ex_rate, total_value))
-	//	return (1);
-	//std::cout << "ex_date : " << ex_date << ", ex_rate : " << ex_rate << ", total value : " << total_value << std::endl;
 	return (0);
 }
