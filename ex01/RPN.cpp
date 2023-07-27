@@ -26,7 +26,6 @@ bool	print_error(void)
 	return (print_error(""));
 }
 
-
 bool	extract_operands(std::stack<int>& operands, int& op1, int& op2)
 {
 	if (operands.empty())
@@ -131,20 +130,20 @@ bool	RPN::solve(const std::string& operations, int& solution)
 			op = ops.substr(0, pos);
 			ops = ops.substr(ops.find_first_not_of(' ', pos));
 		}
-//		std::cout << "op: " << op << ", ops: "<< ops << std::endl;
-
+		if (op.length() > 1)
+		{
+			std::cerr << "Error: Invalid operand or operator found: " << op << std::endl;
+			return (false);
+		}
 		if (std::isdigit(op[0]))
 		{
 			iop = std::stoi(op);
 			solver_stack.push(iop);
-//			std::cout << "Pushed value : " << iop << std::endl;
 			continue ;
 		}
-//		std::cout << "Is OPERATOR !" << std::endl;
 		switch (op[0])
 		{
 			case '+':
-//				std::cout << "Stuck in here with op: " << op << ", top: " << solver_stack.top() << std::endl;
 				if (!add(solver_stack))
 					return (false);
 				break ;
@@ -161,7 +160,8 @@ bool	RPN::solve(const std::string& operations, int& solution)
 					return (false);
 				break ;
 			default:
-				return (print_error());//: encountered invalid operator"));
+				std::cerr << "Error: Invalid operand or operator found: " << op << std::endl;
+				return (false);//: encountered invalid operator"));
 		}
 	}
 
