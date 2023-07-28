@@ -22,6 +22,8 @@ int main(int argc, char **argv)
 		std::cerr << "Error: Missing argument." << std::endl;
 		return (EXIT_FAILURE);
 	}
-	solution = math_solver.solve(argv[1]);
+	if (!math_solver.solve(argv[1], solution))
+		return (EXIT_FAILURE);
+	std::cout << solution << std::endl;
 	return (0);
 }

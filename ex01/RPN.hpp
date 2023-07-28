@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RPN.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 03:23:18 by marvin            #+#    #+#             */
-/*   Updated: 2023/07/28 04:41:59 by marvin           ###   ########.fr       */
+/*   Updated: 2023/07/28 18:31:25 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class RPN
 		RPN&	operator=(const RPN& other);
 		~RPN(void);
 
-		int	solve(const std::string& operations);
+		bool	solve(const std::string& operations, int& solution);
 };
 
 #endif
