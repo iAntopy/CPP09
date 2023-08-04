@@ -6,7 +6,7 @@
 #    By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/23 02:29:20 by iamongeo          #+#    #+#              #
-#    Updated: 2023/07/26 22:14:23 by iamongeo         ###   ########.fr        #
+#    Updated: 2023/08/03 19:59:53 by iamongeo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,8 +22,8 @@ CPPFLGS	=	$(CPPSTD) -Wall -Werror -Wextra
 
 NAME	=	btc
 
-.c.o:
-	c++ $(CPPFLGS) -o $< -c $@
+.cpp.o:
+	c++ $(CPPFLGS) -o $@ -c $<
 
 $(NAME):	$(OBJS)
 	c++ $(CPPFLGS) -o $(NAME) $(OBJS)

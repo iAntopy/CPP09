@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BitcoinExchange.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 21:24:35 by iamongeo          #+#    #+#             */
-/*   Updated: 2023/07/30 17:30:45 by marvin           ###   ########.fr       */
+/*   Updated: 2023/08/03 20:08:56 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,10 +125,9 @@ BitcoinExchange::get_historical_value(const std::string& query,
 	std::string& init_date, std::string& ex_date, std::string& value,
 	float& ex_rate, float& total_value) const
 {
-	size_t		pos, end_pos;
+	size_t		pos;
 	std::string	amount_str;
 	struct tm	date_tm;
-	time_t		t;
 	float		amount;
 
 	std::memset(&date_tm, 0, sizeof(date_tm));
@@ -176,8 +175,11 @@ BitcoinExchange::BitcoinExchange(const BitcoinExchange& other): _exchange_rates(
 
 BitcoinExchange&	BitcoinExchange::operator=(const BitcoinExchange& other)
 {
-	_exchange_rates.clear();
-	_exchange_rates = other._exchange_rates;
+	if (this != &other)
+	{
+		_exchange_rates.clear();
+		_exchange_rates = other._exchange_rates;
+	}
 	return (*this);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 19:29:29 by iamongeo          #+#    #+#             */
-/*   Updated: 2023/07/30 16:09:44 by marvin           ###   ########.fr       */
+/*   Updated: 2023/08/03 21:10:04 by iamongeo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ class PmergeMe
 		void	_sort_vect(int start, int end);
 
 		bool				timer_ready;
-		struct timespec		ori_time{};
+		struct timespec		ori_time;
 		time_t				delta_time;// in ns
 
 

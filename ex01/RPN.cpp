@@ -12,6 +12,7 @@
 
 #include "RPN.hpp"
 
+/// Error handling and utils
 bool	print_error(const std::string& msg)
 {
 	if (!msg.empty())
@@ -21,9 +22,15 @@ bool	print_error(const std::string& msg)
 	return (false);
 }
 
-bool	print_error(void)
+bool	print_error(const std::string& msg, const std::string& op)
 {
-	return (print_error(""));
+	if (!msg.empty())
+		print_error("");
+	else
+	{
+		std::cerr << "Error: " << msg << " " << op << std::endl;
+	}
+	return (false);
 }
 
 bool	extract_operands(std::stack<int>& operands, int& op1, int& op2)
@@ -39,6 +46,8 @@ bool	extract_operands(std::stack<int>& operands, int& op1, int& op2)
 	return (true);
 }
 
+
+////// Operator functions
 bool	RPN::add(std::stack<int>& operands)
 {
 	int		op1, op2;
@@ -81,18 +90,50 @@ bool	RPN::div(std::stack<int>& operands)
 	return (true);
 }
 
+bool	RPN::_exec_operator(char opr, std::stack<int>& solver_stack)
+{
+	switch (opr)
+	{
+		case '+':
+			if (!add(solver_stack))
+				return (false);
+			break ;
+		case '-':
+			if (!sub(solver_stack))
+				return (false);
+			break ;
+		case '*':
+			if (!mul(solver_stack))
+				return (false);
+			break ;
+		case '/':
+			if (!div(solver_stack))
+				return (false);
+			break ;
+		default:
+			std::cerr << "Error: Invalid operand or operator found: " << opr << std::endl;
+			return (false);
+	}
+	return (true);
+}
 
 
+
+/// Constructors / Destructors / Copy
 RPN::RPN(void)
 {
 }
 
 RPN::RPN(const RPN& other)
 {
+	if (this != &other)
+		*this = other;
 }
 
 RPN&	RPN::operator=(const RPN& other)
 {
+	if (this != &other)
+		*this = other;
 	return (*this);
 }
 
@@ -100,63 +141,29 @@ RPN::~RPN(void)
 {
 }
 
-bool	RPN::solve(const std::string& operations, int& solution)
+
+/// Solver
+bool	RPN::solve(const std::string& ops, int& solution)
 {
 	std::stack<int>	solver_stack;
-	std::string		ops = operations;
 	std::string		op;
-	int				iop;
-	size_t			pos;
+	size_t			pos1 = 0, pos2 = 0;
 
-	while (!ops.empty())
+	while ((pos1 = ops.find_first_not_of(' ', pos2)) != ops.npos)
 	{
-		pos = ops.find(' ');
-		if (pos == ops.npos)
-		{
-			op = ops;
-			ops = "";			
-		}
+		if ((pos2 = ops.find(' ', pos1)) == ops.npos)
+			op = ops.substr(pos1);
 		else
-		{
-			op = ops.substr(0, pos);
-			ops = ops.substr(ops.find_first_not_of(' ', pos));
-		}
+			op = ops.substr(pos1, pos2 - pos1);
 		if (op.length() > 1)
-		{
-			std::cerr << "Error: Invalid operand or operator found: " << op << std::endl;
-			return (false);
-		}
+			return (print_error("Error: Invalid operand or operator found: ", op));
 		if (std::isdigit(op[0]))
-		{
-			iop = std::stoi(op);
-			solver_stack.push(iop);
-			continue ;
-		}
-		switch (op[0])
-		{
-			case '+':
-				if (!add(solver_stack))
-					return (false);
-				break ;
-			case '-':
-				if (!sub(solver_stack))
-					return (false);
-				break ;
-			case '*':
-				if (!mul(solver_stack))
-					return (false);
-				break ;
-			case '/':
-				if (!div(solver_stack))
-					return (false);
-				break ;
-			default:
-				std::cerr << "Error: Invalid operand or operator found: " << op << std::endl;
-				return (false);
-		}
+			solver_stack.push(std::stoi(op));
+		else if (!_exec_operator(op[0], solver_stack))
+			return (false);
 	}
 	if (solver_stack.empty())
-		return (print_error());
+		return (print_error("Nothing to solve"));
 	solution = solver_stack.top();
 	return (true);
 }

@@ -6,7 +6,7 @@
 #    By: iamongeo <iamongeo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/23 02:29:20 by iamongeo          #+#    #+#              #
-#    Updated: 2023/07/28 19:31:54 by iamongeo         ###   ########.fr        #
+#    Updated: 2023/08/03 20:00:29 by iamongeo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,8 +22,8 @@ CPPFLGS	=	$(CPPSTD) -Wall -Werror -Wextra
 
 NAME	=	PmergeMe
 
-.c.o:
-	c++ $(CPPFLGS) -o $< -c $@
+.cpp.o:
+	c++ $(CPPFLGS) -o $@ -c $<
 
 $(NAME):	$(OBJS)
 	c++ $(CPPFLGS) -o $(NAME) $(OBJS)

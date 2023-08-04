@@ -59,18 +59,28 @@ PmergeMe::print_sequence(e_container_type ctype)
 }
 
 
-PmergeMe::PmergeMe(void): timer_ready(false), N(0), k(0)
+PmergeMe::PmergeMe(void): N(0), k(0), timer_ready(false)
 {
 }
 
-PmergeMe::PmergeMe(const PmergeMe& other): timer_ready(false), N(other.N), k(other.k)
+PmergeMe::PmergeMe(const PmergeMe& other): N(other.N), k(other.k), timer_ready(false)
 {
-	L = other.L;
-	V = other.V;
+	if (this != &other)
+	{
+		L = other.L;
+		V = other.V;
+	}
 }
 
 PmergeMe&	PmergeMe::operator=(const PmergeMe& other)
 {
+	if (this != &other)
+	{
+		N = other.N;
+		k = other.k;
+		L = other.L;
+		V = other.V;
+	}
 	return (*this);
 }
 
@@ -162,8 +172,7 @@ void
 PmergeMe::insersion_sort_list(int start, int end)
 {
 	std::list<int>::iterator	st, s, si, it, ed;
-	int i, n;
-	int	temp;
+	int n, temp;
 
 	n = end - start - 1;
 	for (int i=0; i < n; ++i)
@@ -208,9 +217,9 @@ PmergeMe::merge_vect(int start, int mid, int end)
 	int					i, l, r;
 
 	std::copy(V.begin() + start, V.begin() + end, V2.begin() + start);
-	i = start;	// index inside real array V
-	l = start;	// index inside segment copy V2.
-	r = mid;	// index inside segment copy V2.
+	i = start;// 	index inside real array V
+	l = start;//	index inside segment copy V2.
+	r = mid;//		index inside segment copy V2.
 	for (i = start; i < end; ++i)
 	{
 		if (r == end)
@@ -314,6 +323,7 @@ PmergeMe::timer_probe(void)
 	ori_time = curr_time;
 }
 
+/// Gives time in microseconds (µs)
 float
 PmergeMe::get_delta_time(void)
 {
